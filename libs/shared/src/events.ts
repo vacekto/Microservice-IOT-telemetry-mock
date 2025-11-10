@@ -1,3 +1,3 @@
 export enum EVENTS {
-  HELLO = 'HELLO',
+  HELLO = 'TELEMETRY',
 }

@@ -17,6 +17,6 @@ async function bootstrap() {
   );
 
   await app.listen();
-  console.log('consumer running');
+  console.log('consumer service running');
 }
 void bootstrap();

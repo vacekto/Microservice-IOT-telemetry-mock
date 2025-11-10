@@ -2,8 +2,7 @@ import { QUEUES } from '@app/shared/queus';
 import { TOKENS } from '@app/shared/tokents';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { ProducerController } from './producer.controller';
-import { ProducerService } from './producer.service';
+import { TelemetryService } from './telemetry/telemetry.service';
 
 @Module({
   imports: [
@@ -19,7 +18,7 @@ import { ProducerService } from './producer.service';
       },
     ]),
   ],
-  controllers: [ProducerController],
-  providers: [ProducerService],
+  controllers: [],
+  providers: [TelemetryService],
 })
 export class ProducerModule {}
