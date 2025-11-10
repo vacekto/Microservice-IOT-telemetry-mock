@@ -1,16 +1,24 @@
 services:
-  base:
-    build:
-      context: .
-      dockerfile: dockerfile
-    image: base
-
   rabbitmq:
     image: rabbitmq:3-management
     ports:
       - '5672:5672'
       - '15672:15672'
     restart: always
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    restart: always
+    volumes:
+      - redis-data:/data
+
+  base:
+    build:
+      context: .
+      dockerfile: dockerfile
+    image: base
 
   producer:
     build:
@@ -39,3 +47,9 @@ services:
     depends_on:
       - base
       - rabbitmq
+      - redis
+    ports:
+      - '3000:3000' # host:container
+
+volumes:
+  redis-data:

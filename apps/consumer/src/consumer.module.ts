@@ -1,10 +1,19 @@
+import { TOKENS } from '@app/shared/tokents';
 import { Module } from '@nestjs/common';
-import { ConsumerController } from './consumer.controller';
-import { TelemetryController } from './telemetry/telemetry.controller';
+import Redis from 'ioredis';
+import { RedisService } from './telemetry/redis.service';
+import { TelemetryHttpController } from './telemetry/telemetry.http.controller';
+import { TelemetryRMQController } from './telemetry/telemetry.rmq.controller';
 
 @Module({
   imports: [],
-  controllers: [ConsumerController, TelemetryController],
-  providers: [],
+  controllers: [TelemetryRMQController, TelemetryHttpController],
+  providers: [
+    {
+      provide: TOKENS.REDIS,
+      useFactory: () => new Redis({ host: 'redis', port: 6379 }),
+    },
+    RedisService,
+  ],
 })
 export class ConsumerModule {}
