@@ -1,4 +1,4 @@
-export type TelemetryPayload = {
+export type TelemetryData = {
   deviceId: string;
   timestamp: number;
   temperature: number;

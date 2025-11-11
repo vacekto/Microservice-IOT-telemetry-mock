@@ -1,4 +1,4 @@
-import { EVENTS, TelemetryPayload } from '@app/shared';
+import { EVENTS, TelemetryData } from '@app/shared';
 import { TOKENS } from '@app/shared/tokents';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -18,7 +18,7 @@ export class TelemetryService implements OnModuleInit {
     this.start();
   }
 
-  generateTelemetryData(): TelemetryPayload {
+  generateTelemetryData(): TelemetryData {
     return {
       deviceId: TelemetryService.DEVICE_ID,
       humidity: Math.floor(Math.random() * 30) + 30,
@@ -27,7 +27,7 @@ export class TelemetryService implements OnModuleInit {
     };
   }
 
-  sendTelemetry(payload: TelemetryPayload) {
+  sendTelemetry(payload: TelemetryData) {
     this.RMQ.emit(EVENTS.NEW_TELEMETRY, payload);
   }
 

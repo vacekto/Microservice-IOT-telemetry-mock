@@ -49,7 +49,7 @@ services:
       - rabbitmq
       - redis
     ports:
-      - '3000:3000' # host:container
+      - '3000:3000'
 
 volumes:
   redis-data:

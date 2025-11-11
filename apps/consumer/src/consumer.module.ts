@@ -1,4 +1,4 @@
-import { TOKENS } from '@app/shared/tokents';
+import { TOKENS } from '@app/shared';
 import { Module } from '@nestjs/common';
 import Redis from 'ioredis';
 import { RedisService } from './telemetry/redis.service';

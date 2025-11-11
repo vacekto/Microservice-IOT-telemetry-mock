@@ -1,4 +1,5 @@
-import { QUEUES } from '@app/shared/queus';
+import { QUEUES } from '@app/shared';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConsumerModule } from './consumer.module';
@@ -10,10 +11,18 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: ['amqp://rabbitmq:5672'],
-      queue: QUEUES.messages_queue,
+      queue: QUEUES.MESSAGES,
       queueOptions: { durable: false },
     },
   });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   await app.startAllMicroservices();
   await app.listen(3000);
