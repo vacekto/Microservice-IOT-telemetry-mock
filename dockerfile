@@ -5,3 +5,4 @@ COPY *.json .
 COPY libs libs
 
 RUN npm install -g @nestjs/cli
+# RUN npm i
