@@ -3,7 +3,13 @@ import { TelemetryData } from '@app/shared/types';
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import { GetTelemetryLatestDto } from '../Dtos/getTelemetryLatestDto';
-import { GetTelemetryRamgeDto } from '../Dtos/getTelemetryRangeDto';
+
+interface GetTelemetryRangeProps {
+  start: number;
+  end: number;
+  deviceId: string;
+  count?: number;
+}
 
 /**
  * Redis instance interface for storing telemetry data, stored in ZSET
@@ -33,14 +39,12 @@ export class RedisService {
    */
 
   async getTelemetryRange({
-    from,
-    to,
+    start,
+    end,
     deviceId,
     count,
-  }: GetTelemetryRamgeDto): Promise<TelemetryData[]> {
-    const start = from ? Date.parse(from) : '-inf';
-    const end = to ? Date.parse(to) : '+inf';
-    count = count ? count : 200;
+  }: GetTelemetryRangeProps): Promise<TelemetryData[]> {
+    count = count ? count : 50;
 
     console.log('request data:', start, end, deviceId);
 
@@ -63,6 +67,10 @@ export class RedisService {
     return results;
   }
 
+  /**
+   *
+   * @returns  ${count} of latest telemetry measurements for specified ${deviceId}
+   */
   async getTelemetryLatest({ deviceId, count }: GetTelemetryLatestDto) {
     count = count ? count : 30;
     const key = `${this.zsetKey}:${deviceId}`;

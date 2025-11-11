@@ -11,7 +11,7 @@ import { TelemetryService } from './telemetry/telemetry.service';
         name: TOKENS.RMQ,
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://rabbitmq:5672'],
+          urls: [process.env.RABBITMQ_URL as string],
           queue: QUEUES.MESSAGES,
           queueOptions: { durable: false },
         },

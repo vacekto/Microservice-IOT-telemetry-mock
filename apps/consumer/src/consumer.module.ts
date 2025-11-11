@@ -11,7 +11,11 @@ import { TelemetryRMQController } from './telemetry/telemetry.rmq.controller';
   providers: [
     {
       provide: TOKENS.REDIS,
-      useFactory: () => new Redis({ host: 'redis', port: 6379 }),
+      useFactory: () =>
+        new Redis({
+          host: process.env.REDIS_HOST as string,
+          port: Number(process.env.REDIS_PORT),
+        }),
     },
     RedisService,
   ],

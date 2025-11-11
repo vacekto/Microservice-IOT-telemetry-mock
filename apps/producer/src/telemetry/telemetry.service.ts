@@ -2,11 +2,10 @@ import { EVENTS, TelemetryData } from '@app/shared';
 import { TOKENS } from '@app/shared/tokents';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TelemetryService implements OnModuleInit {
-  static DEVICE_ID = uuidv4();
+  static DEVICE_ID = process.env.PRODUCER_ID as string;
   /** in seconds */
   static MESUREMENT_INTERVAL = 10;
 
