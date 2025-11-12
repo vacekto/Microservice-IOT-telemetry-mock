@@ -4,7 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import { GetTelemetryLatestDto } from '../Dtos/getTelemetryLatestDto';
 
-interface GetTelemetryRangeProps {
+export interface GetTelemetryRangeProps {
   start: number;
   end: number;
   deviceId: string;
@@ -21,7 +21,7 @@ interface GetTelemetryRangeProps {
 
 @Injectable()
 export class RedisService {
-  private readonly zsetKey = 'telemetry';
+  readonly zsetKey = 'telemetry';
 
   constructor(@Inject(TOKENS.REDIS) private readonly client: Redis) {}
 

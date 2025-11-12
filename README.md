@@ -26,20 +26,23 @@ cd <repo-directory>
 Create a .env file in the project root with the following variables and default values:
 
 \## GLOBAL
-RABBITMQ_HOST=rabbitmq
-RABBITMQ_PORT=5672
-RABBITMQ_USER=myuser
-RABBITMQ_PWD=mypassword
+
+- RABBITMQ_HOST=rabbitmq
+- RABBITMQ_PORT=5672
+- RABBITMQ_USER=myuser
+- RABBITMQ_PWD=mypassword
 
 \## CONSUMER
-CONSUMER_HTTP_PORT=3000
-REDIS_HOST=redis
-REDIS_PORT=6379
+
+- CONSUMER_HTTP_PORT=3000
+- REDIS_HOST=redis
+- REDIS_PORT=6379
 
 \## PRODUCER
-PRODUCER_HTTP_PORT=3000
-\# must be valid UUID !!
-PRODUCER_ID=bd5b41ef-fa8f-47b8-b62e-326dcaba7a44
+
+- PRODUCER_HTTP_PORT=3000
+  \# must be valid UUID !!
+- PRODUCER_ID=bd5b41ef-fa8f-47b8-b62e-326dcaba7a44
 
 These values will be used as default configuration and for Swagger “Try it out” in the consumer API.
 
