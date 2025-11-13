@@ -3,8 +3,8 @@ services:
     image: rabbitmq:3-management
     restart: always
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PWD}
+      - RABBITMQ_DEFAULT_USER=${RMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RMQ_PWD}
 
   redis:
     image: redis:7-alpine
@@ -22,6 +22,8 @@ services:
     build:
       context: .
       dockerfile: apps/producer/dockerfile
+    env_file:
+      - apps/producer/.env
     volumes:
       - ./apps/producer:/app/apps/producer
       - ./node_modules:/app/node_modules
@@ -31,32 +33,25 @@ services:
     depends_on:
       - base
       - rabbitmq
-    environment:
-      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PWD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
-      - PORT=${PRODUCER_HTTP_PORT}
-      - PRODUCER_ID=${PRODUCER_ID}
 
   consumer:
     build:
       context: .
       dockerfile: apps/consumer/dockerfile
+    env_file:
+      - apps/producer/.env
     volumes:
       - ./apps/consumer:/app/apps/consumer
       - ./node_modules:/app/node_modules
       - ./package.json:/app/package.json
       - ./package-lock.json:/app/package-lock.json
       - ./libs:/app/libs
+    ports:
+      - ${CONSUMER_EXPOSED_PORT}:3000 # right-side port must be in sync with the PORT value in apps/consumer/.env
     depends_on:
       - base
       - rabbitmq
       - redis
-    ports:
-      - '${CONSUMER_HTTP_PORT}:3000'
-    environment:
-      - PORT=${CONSUMER_HTTP_PORT}
-      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PWD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
 
 volumes:
   redis-data:
