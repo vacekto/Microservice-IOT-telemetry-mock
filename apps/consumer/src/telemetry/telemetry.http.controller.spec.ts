@@ -1,7 +1,7 @@
 import { TelemetryData } from '@app/shared';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
-import { RedisService } from './redis.service';
+import { RedisService } from '../Redis/redis.service';
 import { TelemetryHttpController } from './telemetry.http.controller';
 
 describe('TelemetryHttpController', () => {

@@ -2,7 +2,7 @@ import { TOKENS } from '@app/shared/tokents';
 import { TelemetryData } from '@app/shared/types';
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import { GetTelemetryLatestDto } from '../Dtos/getTelemetryLatestDto';
+import { GetTelemetryLatestDto } from '../telemetry/Dtos/getTelemetryLatestDto';
 
 export interface GetTelemetryRangeProps {
   start: number;
@@ -13,10 +13,9 @@ export interface GetTelemetryRangeProps {
 
 /**
  * Redis instance interface for storing telemetry data, stored in ZSET
- * ZSET key == telemetry:${deviceId}
+ * ZSET key == ${RedisService.zsetKey}:${deviceId}
  * ZSET score == timestamp,
  * ZSET value == JSON(data)
- *
  */
 
 @Injectable()
@@ -34,8 +33,9 @@ export class RedisService {
   }
 
   /**
-   * Retrieve all data in a timestamp range
-   * start and end are Unix timestamps (ms)
+   * Retrieve all data from a time range in ascending order
+   * @param {number} start in Unix timestamps (ms)
+   * @param {number} end in Unix timestamps (ms)
    */
 
   async getTelemetryRange({
@@ -45,8 +45,6 @@ export class RedisService {
     count,
   }: GetTelemetryRangeProps): Promise<TelemetryData[]> {
     count = count ? count : 50;
-
-    console.log('request data:', start, end, deviceId);
 
     const key = `${this.zsetKey}:${deviceId}`;
     const data = await this.client.zrangebyscore(
@@ -68,13 +66,13 @@ export class RedisService {
   }
 
   /**
-   *
-   * @returns  ${count} of latest telemetry measurements for specified ${deviceId}
+   * @param {number} [params.count=30] - The number of latest measurements to return.
+   * @returns {Promise<TelemetryData[]>} A list of the most recent telemetry records in descending order.
    */
   async getTelemetryLatest({ deviceId, count }: GetTelemetryLatestDto) {
     count = count ? count : 30;
     const key = `${this.zsetKey}:${deviceId}`;
-    const data = await this.client.zrange(key, 0, count - 1);
+    const data = await this.client.zrevrange(key, 0, count - 1);
 
     const results: TelemetryData[] = [];
 
