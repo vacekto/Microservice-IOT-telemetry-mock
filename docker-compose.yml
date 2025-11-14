@@ -26,10 +26,8 @@ services:
       - apps/producer/.env
     volumes:
       - ./apps/producer:/app/apps/producer
-      - ./node_modules:/app/node_modules
       - ./libs:/app/libs
-      - ./package.json:/app/package.json
-      - ./package-lock.json:/app/package-lock.json
+
     depends_on:
       - base
       - rabbitmq
@@ -39,13 +37,11 @@ services:
       context: .
       dockerfile: apps/consumer/dockerfile
     env_file:
-      - apps/producer/.env
+      - apps/consumer/.env
     volumes:
       - ./apps/consumer:/app/apps/consumer
-      - ./node_modules:/app/node_modules
-      - ./package.json:/app/package.json
-      - ./package-lock.json:/app/package-lock.json
       - ./libs:/app/libs
+
     ports:
       - ${CONSUMER_EXPOSED_PORT}:3000 # right-side port must be in sync with the PORT value in apps/consumer/.env
     depends_on:

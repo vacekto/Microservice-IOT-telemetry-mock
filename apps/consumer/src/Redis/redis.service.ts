@@ -89,4 +89,12 @@ export class RedisService {
     const sliced = keys.map((k) => k.slice(length));
     return sliced;
   }
+
+  async close() {
+    await this.client.quit();
+  }
+
+  async flush() {
+    await this.client.flushdb();
+  }
 }

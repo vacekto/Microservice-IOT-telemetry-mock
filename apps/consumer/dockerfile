@@ -2,4 +2,4 @@ FROM base
 
 COPY apps/consumer apps/consumer
 
-ENTRYPOINT [ "nest", "start", "--watch", "consumer"]
+CMD [ "nest", "start", "--watch", "consumer"]

@@ -2,79 +2,102 @@
 
 ## About
 
-This project contains two microservices simulating IoT telemetry:
+NestJS project containing two microservices simulating IoT telemetry:
 
-- Producer – simulates an IoT device sending telemetry data to RabbitMQ.
-- Consumer – listens to RabbitMQ, stores telemetry in Redis, and exposes a REST API.
+- Producer – simulates an IoT device sending telemetry data via RabbitMQ message broker.
+- Consumer – listens to RabbitMQ, stores telemetry in Redis instance, and exposes a REST API for persisted data.
 
-Both services run locally using Docker and Docker Compose. Project is structured as a monorepo using NestJS framework.
+Structured as NestJS monorepo, meaning all services share dependencies in single node_modules folder. Project contains shared code in the ./libs folder. Both services run locally using Docker and Docker Compose with their own dockerfile that extends base dockerfile in project root.
+
+The Redis store in consumer service persists data in ZSET type with telemetry data saved as JSON string with its timestamp as a score, meaning more effective search by time range. Each IoT device has its own ZSET for its data identifed in the store with prefixed device ID.
 
 ## Prerequisites
 
-- Docker installed
-- Docker Compose installed
-- Git
-- npm (Optional, for efficient local caching of dependencies)
+- docker and Docker Compose installed
 
-## 1 Clone the repository
+## Environment variables
 
-git clone <repo-url>
-cd <repo-directory>
+Each service has its own.env file with all the needed values and global .env config is for RabbitMQ and other global settings. Default values:
 
-## 2 Create .env file
+- ./.env:
 
-Create a .env file in the project root with the following variables and default values:
+RMQ_USER=myuser
 
-\## GLOBAL
+RMQ_PWD=mypassword
 
-- RABBITMQ_HOST=rabbitmq
-- RABBITMQ_PORT=5672
-- RABBITMQ_USER=myuser
-- RABBITMQ_PWD=mypassword
+CONSUMER_EXPOSED_PORT=3000
 
-\## CONSUMER
+- ./apps/consumer/producer/.env:
 
-- CONSUMER_HTTP_PORT=3000
-- REDIS_HOST=redis
-- REDIS_PORT=6379
+RMQ_HOST=rabbitmq
 
-\## PRODUCER
+RMQ_PORT=5672
 
-- PRODUCER_HTTP_PORT=3000
-  \# must be valid UUID !!
-- PRODUCER_ID=bd5b41ef-fa8f-47b8-b62e-326dcaba7a44
+RMQ_USER=myuser
 
-These values will be used as default configuration and for Swagger “Try it out” in the consumer API.
+RMQ_PWD=mypassword
 
-## 3 Start
+PORT=3000
 
-Both services use volumes to cache the node_modules folder, so either those need to be installed first or little change of setup is needed. You can therefore start the project in the following ways:
+PRODUCER_ID=bd5b41ef-fa8f-47b8-b62e-326dcaba7a44 # must be valid UUID !!
 
-### 1
+- ./apps/consumer/producer/.env:
 
-- Run the following command from the project root: "npm i", "docker compose up"
+RMQ_HOST=rabbitmq
 
-### 2
+RMQ_PORT=5672
 
-- Run the following command from the project root: "docker compose up"
-- add "RUN npm i to base dockerfile in the root as last command"
-- remove docker volumes to node_modules in both Producer and Consumer services in docker-compose.yml config file
+RMQ_USER=myuser
+
+RMQ_PWD=mypassword
+
+PORT=3000
+
+REDIS_HOST=redis
+
+REDIS_PORT=6379
+
+## Start
+
+run in terminal: docker compose up
 
 This will start:
 
 - RabbitMQ (AMQP broker)
 - Redis (in-memory storage)
 - Producer service
-- Consumer service (exposes REST API and Swagger docs)
+- Consumer service (exposes REST API with Swagger docs)
 
-producer service will start to send mocked telemetry data every 10 seconds to the consumer service via RabbitMQ message broker
+producer service will start to send mocked telemetry data every 10 seconds to the consumer service via RabbitMQ message broker, which then loggs new data to standard output.
 
-## 4. Access the services
+## Testing
+
+project contains unit tests and testing setup for integration tests.
+
+1. unit tests:
+
+- npm i
+- npm run test
+
+2. integration tests:
+
+- create testing .env files with the following default values:
+  - ./.env.test:
+
+    CONSUMER_EXPOSED_PORT=3000
+
+  - ./apps/consumer/producer/.env:
+
+    PORT=3000
+
+    REDIS_HOST=redis
+
+    REDIS_PORT=6379
+
+- docker compose --env-file .env.test -f docker-compose.test.yml up
+
+Integration tests are however implemented in a sort of "hacking" way, where output is redirected to the ./logs folder and are written only for the consumer, since producer consists of single service.
 
 ### Consumer API (Swagger UI)
 
-Swegger documentation is r=provided in the following link: http://localhost:${CONSUMER_HTTP_PORT}/api, where CONSUMER_HTTP_PORT is from your .env file.
-
-## 5 Todo:
-
-projects as of yet lacks testing and proper asynchronous initialization of services.
+Swegger documentation for consumer REST API is provided in /api route

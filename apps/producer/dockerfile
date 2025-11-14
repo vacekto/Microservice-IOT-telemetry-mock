@@ -2,4 +2,4 @@ FROM base
 
 COPY apps/producer apps/producer
 
-ENTRYPOINT [ "nest", "start", "--watch", "producer"]
+CMD [ "nest", "start", "--watch", "producer"]

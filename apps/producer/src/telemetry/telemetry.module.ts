@@ -10,7 +10,9 @@ import { TelemetryService } from './telemetry.service';
         name: TOKENS.RMQ,
         transport: Transport.RMQ,
         options: {
-          urls: [process.env.RABBITMQ_URL as string],
+          urls: [
+            `amqp://${process.env.RMQ_USER}:${process.env.RMQ_PWD}@${process.env.RMQ_HOST}:${process.env.RMQ_PORT}`,
+          ],
           queue: QUEUES.MESSAGES,
           queueOptions: { durable: false },
         },
