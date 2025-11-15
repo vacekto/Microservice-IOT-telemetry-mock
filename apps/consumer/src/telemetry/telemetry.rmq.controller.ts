@@ -1,4 +1,4 @@
-import { EVENTS, TelemetryData } from '@app/shared';
+import { RMQ_EVENTS, TelemetryData } from '@app/shared';
 import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { RedisService } from '../Redis/redis.service';
@@ -9,9 +9,9 @@ export class TelemetryRMQController {
 
   constructor(private readonly redisService: RedisService) {}
 
-  @MessagePattern(EVENTS.NEW_TELEMETRY)
+  @MessagePattern(RMQ_EVENTS.NEW_TELEMETRY)
   async handleTelemetry(@Payload() data: TelemetryData) {
     await this.redisService.saveTelemetry(data);
-    this.logger.log(`Received telemetry: ${JSON.stringify(data)}`);
+    this.logger.debug(`Received telemetry: ${JSON.stringify(data)}`);
   }
 }

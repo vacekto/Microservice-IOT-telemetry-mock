@@ -1,0 +1,3 @@
+export enum EMMITER2_EVENTS {
+  NEW_TELEMETRY = 'NEW_TELEMETRY',
+}

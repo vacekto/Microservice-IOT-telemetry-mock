@@ -33,7 +33,7 @@ describe('TelemetryService', () => {
     expect(typeof data.timestamp).toBe('number');
   });
 
-  it('should call RMQ.emit when sending telemetry', () => {
+  it('should send telemetry over eventEmitter2', () => {
     const fakeData: TelemetryData = {
       deviceId: 'cosikdosi123',
       humidity: 50,

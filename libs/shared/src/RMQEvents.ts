@@ -1,3 +1,3 @@
-export enum EVENTS {
+export enum RMQ_EVENTS {
   NEW_TELEMETRY = 'NEW_TELEMETRY',
 }

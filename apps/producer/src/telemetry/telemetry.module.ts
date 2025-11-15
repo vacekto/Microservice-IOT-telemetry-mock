@@ -1,10 +1,13 @@
 import { QUEUES, TOKENS } from '@app/shared';
 import { Module } from '@nestjs/common';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TelemetryService } from './telemetry.service';
+import { TelemetryTransportService as TelemetryTransportController } from './telemetry.transport.service';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ClientsModule.register([
       {
         name: TOKENS.RMQ,
@@ -20,6 +23,6 @@ import { TelemetryService } from './telemetry.service';
     ]),
   ],
   controllers: [],
-  providers: [TelemetryService],
+  providers: [TelemetryService, TelemetryTransportController],
 })
 export class TelemetryModule {}
