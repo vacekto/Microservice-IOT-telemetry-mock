@@ -1,7 +1,7 @@
-import { TOKENS } from '@app/shared/tokents';
-import { TelemetryData } from '@app/shared/types';
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
+import { TOKENS } from 'libs/shared/util/nestjs.tokents';
+import { TelemetryData } from 'libs/shared/util/types';
 import { GetTelemetryLatestDto } from '../telemetry/Dtos/getTelemetryLatestDto';
 
 export interface GetTelemetryRangeProps {

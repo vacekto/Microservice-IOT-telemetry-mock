@@ -1,3 +1,3 @@
-export enum EMMITER2_EVENTS {
+export enum EMMITER_EVENTS {
   NEW_TELEMETRY = 'NEW_TELEMETRY',
 }

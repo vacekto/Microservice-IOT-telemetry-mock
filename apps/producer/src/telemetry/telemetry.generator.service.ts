@@ -1,7 +1,7 @@
-import { TelemetryData } from '@app/shared';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { EMMITER2_EVENTS } from '../util/Emmiter2Events';
+import { TelemetryData } from 'libs/shared';
+import { EMMITER_EVENTS } from '../util/EmmiterEvents';
 
 @Injectable()
 export class TelemetryService implements OnModuleInit {
@@ -9,7 +9,7 @@ export class TelemetryService implements OnModuleInit {
   static DEVICE_ID = process.env.PRODUCER_ID as string;
 
   /** in seconds */
-  static MESUREMENT_INTERVAL = 1;
+  static MESUREMENT_INTERVAL = 3;
 
   constructor(private readonly events: EventEmitter2) {}
 
@@ -29,13 +29,13 @@ export class TelemetryService implements OnModuleInit {
   }
 
   sendTelemetry(data: TelemetryData) {
-    this.events.emit(EMMITER2_EVENTS.NEW_TELEMETRY, data);
+    this.events.emit(EMMITER_EVENTS.NEW_TELEMETRY, data);
   }
 
   start() {
     this.intervalId = setInterval(() => {
       const data = this.generateTelemetryData();
-      this.events.emit(EMMITER2_EVENTS.NEW_TELEMETRY, data);
+      this.events.emit(EMMITER_EVENTS.NEW_TELEMETRY, data);
     }, TelemetryService.MESUREMENT_INTERVAL * 1000);
   }
 

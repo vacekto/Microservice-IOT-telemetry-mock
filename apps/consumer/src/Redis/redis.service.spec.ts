@@ -1,6 +1,6 @@
-import { TelemetryData } from '@app/shared';
-import { TOKENS } from '@app/shared/tokents';
 import { Test, TestingModule } from '@nestjs/testing';
+import { TelemetryData } from 'libs/shared';
+import { TOKENS } from 'libs/shared/util/nestjs.tokents';
 import { GetTelemetryRangeProps, RedisService } from './redis.service';
 
 describe('RedisService behaviour', () => {

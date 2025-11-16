@@ -1,8 +1,8 @@
-import { TelemetryData } from '@app/shared';
-import { TOKENS } from '@app/shared/tokents';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
-import { TelemetryService } from './telemetry.service';
+import { TelemetryData } from 'libs/shared';
+import { TOKENS } from 'libs/shared/util/nestjs.tokents';
+import { TelemetryService } from './telemetry.generator.service';
 
 describe('TelemetryService', () => {
   let service: TelemetryService;

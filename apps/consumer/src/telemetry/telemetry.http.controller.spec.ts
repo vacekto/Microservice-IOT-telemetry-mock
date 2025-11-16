@@ -1,6 +1,6 @@
-import { TelemetryData } from '@app/shared';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
+import { TelemetryData } from 'libs/shared';
 import { RedisService } from '../Redis/redis.service';
 import { TelemetryHttpController } from './telemetry.http.controller';
 

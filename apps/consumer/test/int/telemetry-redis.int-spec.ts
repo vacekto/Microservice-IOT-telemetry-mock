@@ -1,9 +1,9 @@
-import { TelemetryData } from '@app/shared';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConsumerModule } from 'apps/consumer/src/consumer.module';
 import { RedisService } from 'apps/consumer/src/Redis/redis.service';
 import { TelemetryHttpController } from 'apps/consumer/src/telemetry/telemetry.http.controller';
 import Redis from 'ioredis';
+import { TelemetryData } from 'libs/shared';
 
 describe('Integration for TelemetryHttpController and RedisService', () => {
   let module: TestingModule;

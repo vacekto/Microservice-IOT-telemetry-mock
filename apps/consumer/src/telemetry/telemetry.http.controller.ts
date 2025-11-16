@@ -1,6 +1,6 @@
-import { TelemetryData } from '@app/shared';
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { TelemetryData } from 'libs/shared';
 import { RedisService } from '../Redis/redis.service';
 import { GetTelemetryLatestDto } from './Dtos/getTelemetryLatestDto';
 import { GetTelemetryRamgeDto } from './Dtos/getTelemetryRangeDto';

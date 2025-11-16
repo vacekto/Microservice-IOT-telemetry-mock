@@ -13,3 +13,12 @@ export class TelemetryData {
   @ApiProperty({ description: 'Humidity in %' })
   humidity: number;
 }
+
+export type TLOG_LEVELS = (
+  | 'verbose'
+  | 'debug'
+  | 'log'
+  | 'warn'
+  | 'error'
+  | 'fatal'
+)[];

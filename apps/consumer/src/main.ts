@@ -1,12 +1,15 @@
-import { QUEUES } from '@app/shared';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { RMQ_QUEUES } from 'libs/shared';
+import { LOG_LEVELS } from 'libs/shared/util/constants';
 import { ConsumerModule } from './consumer.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(ConsumerModule);
+  const app = await NestFactory.create(ConsumerModule, {
+    logger: LOG_LEVELS,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Telemetry Consumer API')
@@ -23,7 +26,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: [RMQ_URL],
-      queue: QUEUES.MESSAGES,
+      queue: RMQ_QUEUES.MESSAGES,
       queueOptions: { durable: false },
     },
   });
