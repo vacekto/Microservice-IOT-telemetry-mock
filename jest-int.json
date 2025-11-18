@@ -7,7 +7,10 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "^@app/shared(.*)$": "<rootDir>/libs/shared/src$1",
-    "^apps/consumer/src/(.*)$": "<rootDir>/apps/consumer/src/$1"
+    "^@consumer/(.*)$": "<rootDir>/apps/consumer/src/$1",
+    "^@producer/(.*)$": "<rootDir>/apps/producer/src/$1",
+    "^libs/shared$": "<rootDir>/libs/shared",
+    "^@app/shared/(.*)$": "<rootDir>/libs/shared/$1",
+    "^libs/shared/(.*)$": "<rootDir>/libs/shared/$1"
   }
 }

@@ -27,7 +27,7 @@ RMQ_PWD=mypassword
 
 CONSUMER_EXPOSED_PORT=3000
 
-- ./apps/consumer/producer/.env:
+- ./apps/producer/.env:
 
 RMQ_HOST=rabbitmq
 
@@ -41,7 +41,9 @@ PORT=3000
 
 PRODUCER_ID=bd5b41ef-fa8f-47b8-b62e-326dcaba7a44 # must be valid UUID !!
 
-- ./apps/consumer/producer/.env:
+NODE_ENV=development
+
+- ./apps/consumer/.env:
 
 RMQ_HOST=rabbitmq
 
@@ -56,6 +58,8 @@ PORT=3000
 REDIS_HOST=redis
 
 REDIS_PORT=6379
+
+NODE_ENV=development
 
 ## Start
 
@@ -86,7 +90,9 @@ project contains unit tests and testing setup for integration tests.
 
     CONSUMER_EXPOSED_PORT=3000
 
-  - ./apps/consumer/producer/.env:
+    NODE_ENV=testing
+
+  - ./apps/consumer/.env.test:
 
     PORT=3000
 
@@ -94,9 +100,19 @@ project contains unit tests and testing setup for integration tests.
 
     REDIS_PORT=6379
 
+    NODE_ENV=testing
+
+  - ./apps/producer/.env.test:
+
+    PORT=3000
+
+    PRODUCER_ID=bd5b41ef-fa8f-47b8-b62e-326dcaba7a44 # must be valid UUID !!
+
+    NODE_ENV=testing
+
 - docker compose --env-file .env.test -f docker-compose.test.yml up
 
-Integration tests are however implemented in a sort of "hacking" way, where output is redirected to the ./logs folder and are written only for the consumer, since producer consists of single service.
+Integration tests are however implemented in a sort of "hacking" way, where output is redirected to the ./logs folder, producer integration test is broken ATM, hadn't managed to implement eventEmitter in testing environment.
 
 ### Consumer API (Swagger UI)
 

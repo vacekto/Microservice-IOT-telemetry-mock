@@ -25,3 +25,17 @@ services:
       - base
       - redis
     command: sh -c "npm run test:int --detectOpenHandles > /var/log/consumer/integrationTests.log 2>&1"
+
+  producer:
+    build:
+      context: .
+      dockerfile: apps/producer/dockerfile
+    env_file:
+      - apps/producer/.env.test
+    volumes:
+      - ./apps/producer:/app/apps/producer
+      - ./libs:/app/libs
+      - ./logs/producer:/var/log/producer
+    depends_on:
+      - base
+    command: sh -c "npm run test:int --detectOpenHandles > /var/log/producer/integrationTests.log 2>&1"

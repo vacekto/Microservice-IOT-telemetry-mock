@@ -18,12 +18,9 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/shared": [
-        "libs/shared/src"
-      ],
-      "@app/shared/*": [
-        "libs/shared/src/*"
-      ]
+      "@consumer/*": ["apps/consumer/src/*"],
+      "@producer/*": ["apps/producer/src/*"],
+      "@app/shared/*": ["libs/shared/*"]
     }
   }
 }

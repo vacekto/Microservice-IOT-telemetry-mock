@@ -1,9 +1,10 @@
+import { ConsumerModule } from '@consumer/consumer.module';
+import { RedisService } from '@consumer/Redis/redis.service';
+import { TelemetryHttpController } from '@consumer/telemetry/telemetry.http.controller';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConsumerModule } from 'apps/consumer/src/consumer.module';
-import { RedisService } from 'apps/consumer/src/Redis/redis.service';
-import { TelemetryHttpController } from 'apps/consumer/src/telemetry/telemetry.http.controller';
+import { randomUUID } from 'crypto';
 import Redis from 'ioredis';
-import { TelemetryData } from 'libs/shared';
+import { TelemetryDataDTO } from 'libs/shared/util/DTO/telemetryData';
 
 describe('Integration for TelemetryHttpController and RedisService', () => {
   let module: TestingModule;
@@ -11,10 +12,9 @@ describe('Integration for TelemetryHttpController and RedisService', () => {
   let controller: TelemetryHttpController;
   let rawRedis: Redis;
 
-  const deviceId = 'test-device';
+  const deviceId = randomUUID();
 
   beforeAll(async () => {
-    // raw redis connection for cleanup
     rawRedis = new Redis({
       host: process.env.REDIS_HOST,
       port: Number(process.env.REDIS_PORT),
@@ -96,7 +96,7 @@ describe('Integration for TelemetryHttpController and RedisService', () => {
       deviceId,
       timestamp: Date.now(),
       temperature: 30,
-    } as TelemetryData);
+    } as TelemetryDataDTO);
 
     const devices = await controller.getDevices();
 

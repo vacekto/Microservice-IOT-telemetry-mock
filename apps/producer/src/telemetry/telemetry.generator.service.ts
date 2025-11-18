@@ -1,15 +1,16 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { TelemetryData } from 'libs/shared';
+import { randomUUID } from 'crypto';
+import { TelemetryDataDTO } from 'libs/shared/util/DTO/telemetryData';
 import { EMMITER_EVENTS } from '../util/EmmiterEvents';
 
 @Injectable()
-export class TelemetryService implements OnModuleInit {
+export class GeneratorService implements OnModuleInit {
   // must be valid UUID !!
-  static DEVICE_ID = process.env.PRODUCER_ID as string;
+  static DEVICE_ID = (process.env.PRODUCER_ID as string) ?? randomUUID();
 
   /** in seconds */
-  static MESUREMENT_INTERVAL = 3;
+  static MESUREMENT_INTERVAL = 10;
 
   constructor(private readonly events: EventEmitter2) {}
 
@@ -19,27 +20,30 @@ export class TelemetryService implements OnModuleInit {
     this.start();
   }
 
-  generateTelemetryData(): TelemetryData {
+  generateTelemetryData(): TelemetryDataDTO {
     return {
-      deviceId: TelemetryService.DEVICE_ID,
+      deviceId: GeneratorService.DEVICE_ID,
       humidity: Math.floor(Math.random() * 30) + 30,
       temperature: Math.floor(Math.random() * 10) + 20,
       timestamp: Date.now(),
     };
   }
 
-  sendTelemetry(data: TelemetryData) {
+  sendTelemetry(data: TelemetryDataDTO) {
     this.events.emit(EMMITER_EVENTS.NEW_TELEMETRY, data);
   }
 
   start() {
+    if (this.intervalId) return;
     this.intervalId = setInterval(() => {
       const data = this.generateTelemetryData();
       this.events.emit(EMMITER_EVENTS.NEW_TELEMETRY, data);
-    }, TelemetryService.MESUREMENT_INTERVAL * 1000);
+    }, GeneratorService.MESUREMENT_INTERVAL * 1000);
   }
 
   stop() {
-    if (this.intervalId) clearInterval(this.intervalId);
+    if (!this.intervalId) return;
+    clearInterval(this.intervalId);
+    this.intervalId = null;
   }
 }

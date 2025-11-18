@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { TelemetryData } from 'libs/shared';
+import { TelemetryDataDTO } from 'libs/shared/util/DTO/telemetryData';
 import { RedisService } from '../Redis/redis.service';
 import { GetTelemetryLatestDto } from './Dtos/getTelemetryLatestDto';
 import { GetTelemetryRamgeDto } from './Dtos/getTelemetryRangeDto';
@@ -16,7 +16,7 @@ export class TelemetryHttpController {
   @ApiResponse({
     status: 200,
     description: 'List of telemetry data in request range',
-    type: [TelemetryData],
+    type: [TelemetryDataDTO],
   })
   getTelemetryRange(@Query() params: GetTelemetryRamgeDto) {
     const start = Date.parse(params.from);
@@ -38,7 +38,7 @@ export class TelemetryHttpController {
   @ApiResponse({
     status: 200,
     description: 'List of lastest telemetry data',
-    type: [TelemetryData],
+    type: [TelemetryDataDTO],
   })
   getTelemetryLatest(@Query() params: GetTelemetryLatestDto) {
     return this.redisService.getTelemetryLatest(params);

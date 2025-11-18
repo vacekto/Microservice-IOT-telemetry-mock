@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { RMQ_QUEUES, TOKENS } from 'libs/shared';
-import { TelemetryTransportService as TelemetryTransportController } from './telemetry.events.service';
-import { TelemetryService } from './telemetry.generator.service';
+import { TelemetryEventsService } from './telemetry.events.service';
+import { GeneratorService } from './telemetry.generator.service';
 
 @Module({
   imports: [
@@ -23,6 +23,6 @@ import { TelemetryService } from './telemetry.generator.service';
     ]),
   ],
   controllers: [],
-  providers: [TelemetryService, TelemetryTransportController],
+  providers: [GeneratorService, TelemetryEventsService],
 })
 export class TelemetryModule {}

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import { TOKENS } from 'libs/shared/util/nestjs.tokents';
-import { TelemetryData } from 'libs/shared/util/types';
+import { TOKENS } from 'libs/shared';
+import { TelemetryDataDTO } from 'libs/shared/util/DTO/telemetryData';
 import { GetTelemetryLatestDto } from '../telemetry/Dtos/getTelemetryLatestDto';
 
 export interface GetTelemetryRangeProps {
@@ -20,72 +20,87 @@ export interface GetTelemetryRangeProps {
 
 @Injectable()
 export class RedisService {
-  readonly zsetKey = 'telemetry';
+  static readonly zsetKey = 'telemetry';
 
   constructor(@Inject(TOKENS.REDIS) private readonly client: Redis) {}
 
-  async saveTelemetry(data: TelemetryData) {
+  async saveTelemetry(data: TelemetryDataDTO) {
+    const json = JSON.stringify(data);
+
     await this.client.zadd(
-      `${this.zsetKey}:${data.deviceId}`,
+      `${RedisService.zsetKey}:${data.deviceId}`,
       data.timestamp,
-      JSON.stringify(data),
+      json,
     );
   }
 
   /**
-   * Retrieve all data from a time range in ascending order
+   * Retrieves all data for specific device from a time range in ascending order
    * @param {number} start in Unix timestamps (ms)
    * @param {number} end in Unix timestamps (ms)
+   * @param {string} deviceId id (uuid) of the device
+   * @param {number} count number of items to return, default == 50, max value == 100
    */
 
   async getTelemetryRange({
     start,
     end,
     deviceId,
-    count,
-  }: GetTelemetryRangeProps): Promise<TelemetryData[]> {
-    count = count ? count : 50;
+    count = 50,
+  }: GetTelemetryRangeProps): Promise<TelemetryDataDTO[]> {
+    count = count > 100 ? 100 : count;
 
-    const key = `${this.zsetKey}:${deviceId}`;
+    const key = `${RedisService.zsetKey}:${deviceId}`;
+    const offset = 0;
+
     const data = await this.client.zrangebyscore(
       key,
       start,
       end,
       'LIMIT',
-      0,
-      count ? count : 200,
+      offset,
+      count,
     );
 
-    const results: TelemetryData[] = [];
+    const results: TelemetryDataDTO[] = [];
 
     for (const item of data) {
-      results.push(JSON.parse(item) as TelemetryData);
+      results.push(JSON.parse(item) as TelemetryDataDTO);
     }
 
     return results;
   }
 
   /**
-   * @param {number} [params.count=30] - The number of latest measurements to return.
-   * @returns {Promise<TelemetryData[]>} A list of the most recent telemetry records in descending order.
+   * Retrieves latest data for specific device from a time range in descending order
+   * @param {string} deviceId id (uuid) of the device
+   * @param {number} count - The number of latest measurements to return, default == 50 and max == 100.
    */
-  async getTelemetryLatest({ deviceId, count }: GetTelemetryLatestDto) {
-    count = count ? count : 30;
-    const key = `${this.zsetKey}:${deviceId}`;
+  async getTelemetryLatest({
+    deviceId,
+    count = 30,
+  }: GetTelemetryLatestDto): Promise<TelemetryDataDTO[]> {
+    count = count > 100 ? 100 : count;
+
+    const key = `${RedisService.zsetKey}:${deviceId}`;
+
     const data = await this.client.zrevrange(key, 0, count - 1);
 
-    const results: TelemetryData[] = [];
+    const results: TelemetryDataDTO[] = [];
 
     for (const item of data) {
-      results.push(JSON.parse(item) as TelemetryData);
+      results.push(JSON.parse(item) as TelemetryDataDTO);
     }
 
     return results;
   }
 
+  /**
+   * Fetches list of device ids with persested telemetry data
+   */
   async getAllDeviceKeys(): Promise<string[]> {
-    const keys = await this.client.keys(`${this.zsetKey}:*`);
-    const length = `${this.zsetKey}:`.length;
+    const keys = await this.client.keys(`${RedisService.zsetKey}:*`);
+    const length = `${RedisService.zsetKey}:`.length;
     const sliced = keys.map((k) => k.slice(length));
     return sliced;
   }

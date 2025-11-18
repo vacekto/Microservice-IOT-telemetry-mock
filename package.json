@@ -70,7 +70,8 @@
       "ts"
     ],
     "rootDir": ".",
-    "testRegex": ".*\\.spec\\.ts$",
+    "testEnvironment": "node",
+    "testRegex": ".*\\.(spec)\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
@@ -78,13 +79,17 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "./coverage",
-    "testEnvironment": "node",
     "roots": [
       "<rootDir>/apps/",
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@app/shared(|/.*)$": "<rootDir>/libs/shared/src/$1"
+      "^libs/shared$": "<rootDir>/libs/shared",
+      "^libs/shared/(.*)$": "<rootDir>/libs/shared/$1",
+      "^@app/shared$": "<rootDir>/libs/shared",
+      "^@app/shared/(.*)$": "<rootDir>/libs/shared/$1",
+      "^@consumer/(.*)$": "<rootDir>/apps/consumer/src/$1",
+      "^@consumer$": "<rootDir>/apps/consumer/src"
     }
   }
 }
