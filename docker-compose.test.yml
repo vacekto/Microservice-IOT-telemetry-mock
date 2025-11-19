@@ -3,12 +3,6 @@ services:
     image: redis:7-alpine
     restart: always
 
-  base:
-    build:
-      context: .
-      dockerfile: dockerfile
-    image: base
-
   consumer:
     build:
       context: .
@@ -22,9 +16,10 @@ services:
     ports:
       - ${CONSUMER_EXPOSED_PORT}:3000 # right-side port must be in sync with the PORT value in apps/consumer/.env
     depends_on:
-      - base
       - redis
-    command: sh -c "npm run test:int --detectOpenHandles > /var/log/consumer/integrationTests.log 2>&1"
+    entrypoint: >
+      sh -c "npm run test:int --detectOpenHandles
+      | tee /var/log/consumer/integrationTests.log"
 
   producer:
     build:
@@ -36,6 +31,6 @@ services:
       - ./apps/producer:/app/apps/producer
       - ./libs:/app/libs
       - ./logs/producer:/var/log/producer
-    depends_on:
-      - base
-    command: sh -c "npm run test:int --detectOpenHandles > /var/log/producer/integrationTests.log 2>&1"
+    entrypoint: >
+      sh -c "npm run test:int --detectOpenHandles
+      | tee /var/log/producer/integrationTests.log"

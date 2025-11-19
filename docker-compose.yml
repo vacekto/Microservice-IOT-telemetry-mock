@@ -12,12 +12,6 @@ services:
     volumes:
       - redis-data:/data
 
-  base:
-    build:
-      context: .
-      dockerfile: dockerfile
-    image: base
-
   producer:
     build:
       context: .
@@ -29,7 +23,6 @@ services:
       - ./libs:/app/libs
 
     depends_on:
-      - base
       - rabbitmq
 
   consumer:
@@ -45,7 +38,6 @@ services:
     ports:
       - ${CONSUMER_EXPOSED_PORT}:3000 # right-side port must be in sync with the PORT value in apps/consumer/.env
     depends_on:
-      - base
       - rabbitmq
       - redis
 

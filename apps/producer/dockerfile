@@ -1,5 +1,13 @@
-FROM base
+# FROM base
 
+FROM node:20-alpine
+
+WORKDIR /app
+COPY *.json .
+COPY libs libs
 COPY apps/producer apps/producer
+
+RUN npm install -g @nestjs/cli
+RUN npm i
 
 CMD [ "nest", "start", "--watch", "producer"]
